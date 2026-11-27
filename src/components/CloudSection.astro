@@ -1,0 +1,62 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { cloud } from '../data/cloud';
+import { site } from '../data/site';
+import { withBase } from '../lib/url';
+
+interface Props { projects: CollectionEntry<'projects'>[]; }
+const { projects } = Astro.props;
+---
+<section id="cloud" class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Cloud</p>
+      <h2>Azure and AWS</h2>
+      <p class="lead">I design services to run cloud-native and keep the core logic host-agnostic, so the same code can target either provider.</p>
+    </div>
+    <div class="grid two">
+      {cloud.map((c) => {
+        const used = projects.filter((p) => p.data.cloud.includes(c.id));
+        return (
+          <article class={`card cloud ${c.id}`}>
+            <header>
+              <h3>{c.name}</h3>
+              <span class={`badge ${c.id}`}>{c.status}</span>
+            </header>
+            <p>{c.intro}</p>
+            <h4>{c.id === 'azure' ? 'Services I use' : 'Focus areas'}</h4>
+            <ul class="chips">{c.services.map((s) => <li class="chip">{s}</li>)}</ul>
+            {used.length > 0 && (
+              <>
+                <h4>In my projects</h4>
+                <ul class="links">
+                  {used.map((p) => <li><a href={withBase(`work/${p.id}/`)}>{p.data.title}</a></li>)}
+                </ul>
+              </>
+            )}
+            {c.next && (
+              <>
+                <h4>Up next</h4>
+                <ul class="links">{c.next.map((n) => <li>{n}</li>)}</ul>
+              </>
+            )}
+            {c.id === 'azure' && (
+              <p class="note"><a href={site.links.microsoftLearn} target="_blank" rel="noopener noreferrer">Microsoft Learn profile ↗</a></p>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cloud { display: flex; flex-direction: column; gap: 0.75rem; border-top: 4px solid var(--azure); }
+  .cloud.aws { border-top-color: var(--aws); }
+  .cloud header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .cloud h3 { margin: 0; }
+  .cloud p { margin: 0; color: var(--muted); }
+  h4 { margin: 0.5rem 0 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 650; }
+  .links { margin: 0; padding-left: 1.1rem; }
+  .note { margin-top: auto !important; font-size: 0.9rem; }
+</style>
