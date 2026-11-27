@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { withBase } from '../lib/url';
+
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+const { title, summary, stack, cloud, repo } = project.data;
+const href = withBase(`work/${project.id}/`);
+---
+<article class="card project">
+  {cloud.length > 0 && (
+    <div class="badges">
+      {cloud.map((c) => <span class={`badge ${c}`}>{c === 'azure' ? 'Azure' : 'AWS'}</span>)}
+    </div>
+  )}
+  <h3><a href={href} class="stretched">{title}</a></h3>
+  <p>{summary}</p>
+  <ul class="chips">
+    {stack.slice(0, 6).map((s) => <li class="chip">{s}</li>)}
+  </ul>
+  <div class="foot">
+    <span class="more">Read case study <Icon name="arrow-right" /></span>
+    {repo && <a class="repo" href={repo} target="_blank" rel="noopener noreferrer"><Icon name="github" /> Code</a>}
+  </div>
+</article>
+
+<style>
+  .project { position: relative; display: flex; flex-direction: column; gap: 0.85rem; transition: border-color 0.15s, transform 0.15s; }
+  .project:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .project h3 { margin: 0; }
+  .project p { margin: 0; color: var(--muted); }
+  .badges { display: flex; gap: 0.4rem; }
+  .stretched { color: var(--text); text-decoration: none; }
+  .stretched::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+  .more { color: var(--accent); display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 550; }
+  .repo { position: relative; z-index: 1; color: var(--muted); display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none; }
+  .repo:hover { color: var(--text); }
+  .foot :global(svg) { width: 1em; height: 1em; }
+  @media (prefers-reduced-motion: reduce) { .project:hover { transform: none; } }
+</style>
