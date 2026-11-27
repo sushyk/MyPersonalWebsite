@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+<section id="contact" class="section">
+  <div class="container contact">
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h2>Let's talk</h2>
+      <p class="lead">I'm open to senior full stack, backend, AI engineering and cloud roles. The quickest way to reach me is email. I reply within 48 hours.</p>
+      <ul class="actions">
+        <li><a class="btn primary" href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a></li>
+        <li><a class="btn" href={site.links.linkedin} target="_blank" rel="noopener noreferrer"><Icon name="linkedin" /> LinkedIn</a></li>
+      </ul>
+    </div>
+    <form class="card form" method="post" action={site.formspree}>
+      <input type="hidden" name="_subject" value="Message from personal website" />
+      <div class="field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" required /></div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" name="email" autocomplete="email" required /></div>
+      <div class="field"><label for="message">Message</label><textarea id="message" name="message" rows="5" required></textarea></div>
+      <button class="btn primary" type="submit">Send message</button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .form { display: grid; gap: 1rem; }
+  .form .btn { justify-self: start; }
+  @media (max-width: 760px) { .contact { grid-template-columns: 1fr; gap: 2rem; } }
+</style>

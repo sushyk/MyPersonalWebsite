@@ -1,0 +1,54 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', (p) => !p.data.draft);
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { title, summary, role, period, stack, cloud, repo, demo } = project.data;
+const { Content } = await render(project);
+---
+<Base title={title} description={summary}>
+  <article class="container study">
+    <a class="back" href={withBase('/#work')}><Icon name="arrow-left" /> All work</a>
+    <header>
+      {cloud.length > 0 && (
+        <div class="badges">{cloud.map((c) => <span class={`badge ${c}`}>{c === 'azure' ? 'Azure' : 'AWS'}</span>)}</div>
+      )}
+      <h1>{title}</h1>
+      <p class="lead">{summary}</p>
+      <dl class="meta">
+        <div><dt>Role</dt><dd>{role}</dd></div>
+        {period && <div><dt>When</dt><dd>{period}</dd></div>}
+      </dl>
+      <ul class="chips">{stack.map((s) => <li class="chip">{s}</li>)}</ul>
+      {(repo || demo) && (
+        <ul class="actions">
+          {repo && <li><a class="btn" href={repo} target="_blank" rel="noopener noreferrer"><Icon name="github" /> Source code</a></li>}
+          {demo && <li><a class="btn primary" href={demo} target="_blank" rel="noopener noreferrer"><Icon name="external" /> Live demo</a></li>}
+        </ul>
+      )}
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .study { padding: 3rem 0 4rem; }
+  .back { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); text-decoration: none; font-size: 0.95rem; margin-bottom: 2rem; }
+  .back:hover { color: var(--text); }
+  .back :global(svg) { width: 1em; height: 1em; }
+  header { max-width: 46rem; display: grid; gap: 1rem; padding-bottom: 2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  header h1, header p { margin: 0; }
+  .badges { display: flex; gap: 0.4rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin: 0; }
+  .meta dt { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .meta dd { margin: 0; font-weight: 550; }
+</style>

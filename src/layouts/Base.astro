@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import { experience } from '../data/experience';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description = site.description } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · ${site.role}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;550;650;700;750&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <nav class="container nav" aria-label="Main">
+        <a class="brand" href={withBase('/')}>{site.name}</a>
+        <ul>
+          <li><a href={withBase('/#work')}>Work</a></li>
+          <li><a href={withBase('/#cloud')}>Cloud</a></li>
+          {experience.length > 0 && <li class="hide-sm"><a href={withBase('/#experience')}>Experience</a></li>}
+          <li><a href={withBase('/#contact')}>Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        © {new Date().getFullYear()} {site.name}. Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>, hosted on GitHub Pages.
+        <a href={`${site.links.github}/MyPersonalWebsite`}>View source</a>
+      </div>
+    </footer>
+  </body>
+</html>

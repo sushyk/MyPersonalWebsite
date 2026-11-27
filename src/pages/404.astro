@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { withBase } from '../lib/url';
+---
+<Base title="Page not found">
+  <section class="container" style="padding: 6rem 0;">
+    <p class="eyebrow">404</p>
+    <h1>That page doesn't exist.</h1>
+    <p class="lead"><a href={withBase('/')}>Back to the homepage</a></p>
+  </section>
+</Base>
